@@ -44,6 +44,14 @@ $(document).ready(function(){
     }, 5000);
   }
 //////////////////
+/*
+* La fonction ne marche pas encore
+* Elle ne prends pas en compte l'ajout de valeur au fil du temps, je ne sais pas pourquoi
+* La gestion des cas a analyser pour evaluer les chances en fonction des couples est surement
+* fausse
+*
+*/
+//////////////////
   function analyze_tab(tab){
     var parfait = 2;
     var moyen = 1.75;
