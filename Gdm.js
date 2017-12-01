@@ -95,7 +95,7 @@ $(document).ready(function(){
 
       var v = 0;
       for (var b = 0;b< resultat_tab_inf.length;b++){
-        if (resultat_tab_inf[boucle] > choix){
+        if (resultat_tab_inf[b] > choix){
           v = v +1;
         }
       }
