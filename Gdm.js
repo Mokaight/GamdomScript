@@ -4,10 +4,14 @@
 // @match *://*/*
 // @grant none
 // @require https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js
-
+// @require https://raw.githubusercontent.com/eligrey/FileSaver.js/master/FileSaver.js
 $(document).ready(function(){
   var tabReponse = [];
   var tabTest = [];
+  var a = document.createElement("a");
+  var loadingFiles=[];
+  var resultat;
+
   function fuck_the_game(){
     console.log("FIRST");
     setInterval(function () {
@@ -15,7 +19,7 @@ $(document).ready(function(){
           $('.recentBustsContainer > a').each(function(){
             var val = $(this).text();
             tabTest.push(parseFloat(val));
-            console.log(val);
+           /* console.log(val);*/
           })
           if(tabReponse.length == 0){
             tabTest.reverse();
@@ -23,8 +27,8 @@ $(document).ready(function(){
             tabTest = [];
           }
           else{
-            console.log('COUCOU');
-            console.log(tabTest[0]);
+           /* console.log('COUCOU');
+            console.log(tabTest[0]);*/
             if(tabTest[0]==tabReponse[tabReponse.length-1]){
 
             }
@@ -34,7 +38,8 @@ $(document).ready(function(){
             tabTest = [];
 
          }
-          console.log(tabReponse);
+         /* console.log(tabReponse);
+          console.log(tabReponse.length);*/
           analyze_tab(tabReponse);
       }
       else{
@@ -43,21 +48,14 @@ $(document).ready(function(){
 
     }, 5000);
   }
-//////////////////
-/*
-* La fonction ne marche pas encore
-* Elle ne prends pas en compte l'ajout de valeur au fil du temps, je ne sais pas pourquoi
-* La gestion des cas a analyser pour evaluer les chances en fonction des couples est surement
-* fausse
-*
-*/
-//////////////////
+
   function analyze_tab(tab){
-    var parfait = 2;
-    var moyen = 1.75;
-    var mauvais = 1.50;
-    //a définir en fonction de nos choix de cashout
-    var choix = mauvais;
+    var choix = 1.75;
+    var value = parseFloat($(".autobet-input-div > input[name=cash-out").val());
+    console.log("Cest la value : " + value);
+    if(value != 0){
+      choix = value;
+    }
     var resultat_tab_sup = [];
     var resultat_tab_inf = [];
     for(var lol=tab.length-1;lol>0;lol--){
@@ -88,6 +86,8 @@ $(document).ready(function(){
       }
       var result = (vrai / resultat_tab_sup.length)*100;
       console.log("Chance prédécesseur T : " + result + "valeur de vrai " + vrai);
+      document.getElementById('myButton3').innerHTML="";
+      document.getElementById('myButton3').innerText = "Pourcentage de chance au dessus de : " + value + "  est de : " + result + " cas similaire " + vrai;
 
     }
     //on traite resultat_tab_inf
@@ -106,39 +106,55 @@ $(document).ready(function(){
   }
 /////////////////////
   fuck_the_game();
+/////////////////////
+var zNode       = document.createElement ('div');
+zNode.innerHTML = '<button id="myButton" type="button">'
+                + 'Save les données</button>'
+                ;
+zNode.setAttribute ('id', 'myContainer');
+document.body.appendChild (zNode);
+
+var zNode2       = document.createElement ('div');
+zNode2.innerHTML = '<input style="position:absolute;z-index:999:float:left;left: 0%" id ="myButton2" type="file">';
+zNode2.setAttribute ('id', 'myContainer');
+document.body.appendChild (zNode2);
+
+var zNode3       = document.createElement ('div');
+zNode3.innerHTML = '<p style="position:absolute;z-index:999:float:left;left: 15%;top : 5%;color:red" id ="myButton3">COUCOU </p>';
+zNode3.setAttribute ('id', 'myContainer');
+document.body.appendChild (zNode3);
+
+document.getElementById ("myButton").addEventListener (
+    "click", ButtonClickAction, false
+);
+
+function ButtonClickAction (zEvent) {
+    var zNode       = document.createElement ('p');
+    var blob = new Blob(tabReponse, {type: "text/plain;charset=utf-8"});
+    saveAs(blob, "data.txt");
+}
+document.getElementById('myButton2').onchange = function(){
+
+    var file = this.files[0];
+
+    var reader = new FileReader();
+    reader.onload = function(progressEvent){
+      // Entire file
+      console.log(this.result);
+      resultat = this.result;
+      loading_into_tab(resultat);
+    };
+    reader.readAsText(file);
+};
+
+function loading_into_tab(resultat){
+  for (var i=0;i<resultat.length;i++){
+        if(i%4 == 0 || i ==0){
+          tabReponse.push(parseFloat(resultat.slice(i,i+4)));
+        }
+  }
+  console.log("Effectué");
+  console.log(tabReponse);
+}
 
 });
-/*
- *
- *
- *             //Tout les cas ne sont pas traité car la fonction se relancera forcement plus rapidement :)
-            var max = tabReponse.length;
-            console.log(tabReponse.length);
-            if(tabTest[5]==tabReponse[max-6]){
-              if(tabTest[4] == tabReponse[max-5]){
-                if(tabTest[3] == tabReponse[max-4]){
-                  if(tabTest[2] == tabReponse[max-3]){
-                    if(tabTest[1] == tabReponse[max-2]){
-                      if(tabTest[0] == tabReponse[max-1])[
-
-                      ]
-                      else{
-                        tabReponse.push(tabTest[0]);
-                        console.log('hi');
-                      }
-                    }
-                    else{
-                      if(tabTest[0] == tabReponse[max-1])[
-                        //impossible
-                      ]
-                      else{
-                        tabReponse.push(tabTest[1]);
-                        tabReponse.push(tabTest[0]);
-                        console.log('hi2');
-                      }
-                    }
-                  }
-                }
-              }
-            }
-       */
